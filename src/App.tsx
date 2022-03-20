@@ -10,6 +10,8 @@ export const App = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isConverting, setIsConverting] = useState<boolean>(false);
   const [directoryPath, setDirectoryPath] = useState<string>("");
+  const [errors, setErrors] = useState<string[]>([]);
+  const [showModal, setShowModal] = useState(false);
 
   const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files == null || isConverting) return;
@@ -23,12 +25,11 @@ export const App = () => {
 
   const onConvertButtonClick = async () => {
     if (files.length == 0 || isConverting) return;
+    setShowModal(true);
     setIsConverting(true);
-    const errors = await sharp.convert(files, directoryPath);
-    errors.length == 0
-      ? alert("変換が完了しました")
-      : alert("変換に失敗しました\n\n" + errors.join("\n\n"));
+    const convertErrors = await sharp.convert(files, directoryPath);
     setIsConverting(false);
+    setErrors(convertErrors);
   };
 
   const onClearButtonClick = () => {
@@ -132,24 +133,69 @@ export const App = () => {
       </div>
 
       <div className="pb-4 text-center">
-        {isConverting ? (
-          <button
-            type="button"
-            disabled
-            className="py-2 px-4 bg-green-600 transition ease-in duration-200 text-center text-base font-semibold shadow-md rounded-full cursor-not-allowed"
-          >
-            <Loading />
-          </button>
-        ) : (
-          <button
-            type="button"
-            className="py-2 px-4 bg-green-500 hover:bg-green-600 focus:ring-green-500 focus:ring-offset-green-500 transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-full"
-            onClick={onConvertButtonClick}
-          >
-            変換
-          </button>
-        )}
+        <button
+          type="button"
+          className="py-2 px-4 bg-green-500 hover:bg-green-600 focus:ring-green-500 focus:ring-offset-green-500 transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-full"
+          onClick={onConvertButtonClick}
+        >
+          変換
+        </button>
       </div>
+
+      {showModal && (
+        <>
+          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+            <div className="relative w-10/12 my-6 mx-auto max-w-3xl">
+              <div className="p-6 border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-gray-900 outline-none focus:outline-none">
+                {isConverting ? (
+                  <>
+                    <div className="flex justify-center rounded-t">
+                      <h3 className="text-3xl font-semibold">変換中</h3>
+                    </div>
+                    <div className="flex justify-center pt-2">
+                      <Loading />
+                    </div>
+                  </>
+                ) : errors.length == 0 ? (
+                  <div className="flex justify-center rounded-t">
+                    <h3 className="text-3xl font-semibold">
+                      変換が完了しました
+                    </h3>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex justify-center rounded-t">
+                      <h3 className="text-3xl font-semibold">
+                        変換に失敗しました
+                      </h3>
+                    </div>
+                    <div className="relative flex-auto max-h-80 py-2 overflow-scroll whitespace-nowrap">
+                      {errors.map((error) => (
+                        <p className="text-gray-400 text-sm">{error}</p>
+                      ))}
+                    </div>
+                  </>
+                )}
+                {!isConverting && (
+                  <div className="flex items-center justify-end rounded-b pt-2">
+                    <button
+                      type="button"
+                      className="py-2 px-4 bg-green-500 hover:bg-green-600 focus:ring-green-500 focus:ring-offset-green-500 transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-full"
+                      onClick={() => {
+                        setShowModal(false);
+                        setErrors([]);
+                      }}
+                    >
+                      OK
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+        </>
+      )}
     </div>
   );
 };

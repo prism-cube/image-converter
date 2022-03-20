@@ -17,7 +17,7 @@ const convert = async (files: File[], directoryPath: string) => {
       .jpeg()
       .toFile(newFilePath)
       .catch ((err: any) => {
-        errors.push(`${filePath}\n${err}`);
+        errors.push(`[${filePath}] ${err}`);
       });
   });
   await Promise.all(results);
