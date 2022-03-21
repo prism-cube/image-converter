@@ -7,5 +7,4 @@ yarn-*.log
 .env
 .DS_Store
 
-*-win32-x64
-*-darwin-x64
+output

@@ -34,7 +34,9 @@ export const ConvertStateModal: React.VFC<Props> = ({
             ) : (
               <>
                 <div className="flex justify-center rounded-t">
-                  <h3 className="text-3xl font-semibold">変換に失敗しました</h3>
+                  <h3 className="text-3xl font-semibold">
+                    変換に失敗したファイルがあります
+                  </h3>
                 </div>
                 <div className="relative flex-auto max-h-80 py-2 overflow-scroll whitespace-nowrap">
                   {errors.map((error) => (

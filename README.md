@@ -11,4 +11,16 @@ $ npm run dev
 
 # for production
 $ npm run build
+
+# build installer for Mac
+$ npm run build:mac
+
+# build portable for Mac
+$ npm run build:mac:dir
+
+# build installer for Windows
+$ npm run build:win
+
+# build portable for Windows
+$ npm run build:win:dir
 ```
