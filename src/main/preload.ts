@@ -1,23 +1,20 @@
-import { contextBridge, ipcRenderer, dialog } from 'electron';
-
-const sharp = require("sharp");
+import { contextBridge, ipcRenderer } from 'electron';
+import path from 'path';
+import sharp from 'sharp';
 
 const convert = async (files: File[], directoryPath: string) => {
   let errors: string[] = [];
 
   const results = files.map((file) => {
-    const filePath = file.path;
-    const extension = filePath.split('.').pop();
+    const inputPath = file.path;
+    const inputFile = path.parse(inputPath);
+    const outputPath = directoryPath == "" ? path.join(inputFile.dir, `${inputFile.name}.jpg`) : path.join(directoryPath, `${inputFile.name}.jpg`);
 
-    let newFilePath = directoryPath == "" ? 
-      filePath.replace(new RegExp(`\.${extension}$`), ".jpg") : 
-      `${directoryPath}/${file.name.replace(new RegExp(`\.${extension}$`), ".jpg")}`;
-
-    return sharp(filePath)
+    return sharp(inputPath)
       .jpeg()
-      .toFile(newFilePath)
+      .toFile(outputPath)
       .catch ((err: any) => {
-        errors.push(`[${filePath}] ${err}`);
+        errors.push(`[${inputPath}] ${err}`);
       });
   });
   await Promise.all(results);
