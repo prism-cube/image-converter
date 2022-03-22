@@ -85,7 +85,7 @@ export const App = () => {
 
       <div
         {...getRootProps()}
-        className="h-96 bg-gray-800 text-gray-400 overflow-scroll cursor-default whitespace-nowrap"
+        className="h-96 bg-gray-800 text-gray-400 overflow-auto cursor-default whitespace-nowrap"
       >
         <input {...getInputProps()} />
         {files.length == 0 && (
@@ -104,7 +104,7 @@ export const App = () => {
         </table>
       </div>
 
-      <div className="p-4 overflow-scroll whitespace-nowrap max-w-full">
+      <div className="p-4 overflow-auto whitespace-nowrap max-w-full">
         <RoundedButton color="gray" onClick={onChoiceDirectoryButtonClick}>
           保存先フォルダを選択
         </RoundedButton>
